@@ -1,0 +1,17 @@
+{
+    "testPathIgnorePatterns": ["<rootDir>/node_modules/"],
+    "bail": 1,
+    "clearMocks": true,
+    "collectCoverage": true,
+    "collectCoverageFrom": ["src/**/*.ts"],
+    "coverageReporters": ["lcov", "text"],
+    "moduleNameMapper": {
+      "@/tests/(.*)": "<rootDir>/tests/$1",
+      "@/(.*)": "<rootDir>/src/$1"
+    },
+    "transform": {
+      "^.+\\.ts$": "ts-jest"
+    },
+    "preset": "ts-jest",
+    "testEnvironment": "node"
+}
