@@ -15,8 +15,6 @@ class App {
         this.app = express()
         this.port = port
 
-        MongoDb.connect()
-
         this.initializeMiddlewares()
         this.initializeRoutes(routes)
     }
@@ -40,7 +38,11 @@ class App {
     }
 
     public listen(): void {
-        this.app.listen(this.port)
+        MongoDb.connect()
+            .then(() => {
+                this.app.listen(this.port)
+            })
+            .catch(console.error)
     }
 }
 
