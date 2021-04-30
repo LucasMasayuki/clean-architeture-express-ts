@@ -9,7 +9,8 @@ export default class LoadUserByEmailRepositorySpy implements LoadUserByEmailRepo
 
     result: LoadUserByEmailRepositoryResult | null = {
         id: faker.uuid,
-        name: faker.name,
+        firstName: faker.name,
+        lastName: faker.name,
         password: faker.password,
     }
 

@@ -7,7 +7,9 @@ import { Authentication } from '@/domain/usecases/authentication'
 import { Validation } from '../interfaces/validation'
 
 export type SignUpControllerRequest = {
-    name: string
+    firstName: string
+    lastName: string
+    birthDate: Date
     email: string
     password: string
     passwordConfirmation: string
@@ -34,9 +36,11 @@ export class SignUpController implements Controller {
                 return badRequest(error)
             }
 
-            const { name, email, password } = request
+            const { firstName, lastName, birthDate, email, password } = request
             const isValid = await this.addUser.add({
-                name,
+                firstName,
+                lastName,
+                birthDate,
                 email,
                 password,
             })

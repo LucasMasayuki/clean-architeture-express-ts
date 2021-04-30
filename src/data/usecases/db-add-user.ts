@@ -20,13 +20,13 @@ export default class DbAddUser implements AddUser {
         this.addUserRepository = addUserRepository
     }
 
-    async add(accountData: AddUserParams): Promise<AddUserResult> {
-        const exists = await this.checkUserByEmailRepository.checkByEmail(accountData.email)
+    async add(userData: AddUserParams): Promise<AddUserResult> {
+        const exists = await this.checkUserByEmailRepository.checkByEmail(userData.email)
 
         let isValid = false
         if (!exists) {
-            const hashedPassword = await this.hasher.hash(accountData.password)
-            isValid = await this.addUserRepository.add({ ...accountData, password: hashedPassword })
+            const hashedPassword = await this.hasher.hash(userData.password)
+            isValid = await this.addUserRepository.add({ ...userData, password: hashedPassword })
         }
 
         return isValid

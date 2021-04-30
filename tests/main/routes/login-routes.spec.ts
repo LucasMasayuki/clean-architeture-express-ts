@@ -68,7 +68,7 @@ describe('Login Routes', () => {
             await request(app.getServer())
                 .post('/api/v1/login')
                 .send({
-                    email: 'rodrigo.manguinho@gmail.com',
+                    email: 'test.test@gmail.com',
                     password: '123',
                 })
                 .expect(HttpStatus.UNAUTHORIZED)
@@ -77,14 +77,6 @@ describe('Login Routes', () => {
 
     describe('POST /signup', () => {
         test('Should return 200 on signup', async () => {
-            const salt = 12
-            const bcryptAdapter = new BcryptAdapter(salt)
-            const fakeUser = {
-                id: 'test',
-                name: 'test',
-                password: await bcryptAdapter.hash('test'),
-            }
-
             const mockDb = new MockDb()
             const mockClient = new MockClient('test')
 

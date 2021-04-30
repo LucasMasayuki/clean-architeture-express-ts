@@ -1,6 +1,7 @@
 export type LoadUserByEmailRepositoryResult = {
     id: string
-    name: string
+    firstName: string
+    lastName: string
     password: string
 }
 

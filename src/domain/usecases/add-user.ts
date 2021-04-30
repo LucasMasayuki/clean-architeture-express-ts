@@ -1,5 +1,7 @@
 export type AddUserParams = {
-    name: string
+    firstName: string
+    lastName: string
+    birthDate: Date
     email: string
     password: string
 }
@@ -7,5 +9,5 @@ export type AddUserParams = {
 export type AddUserResult = boolean
 
 export interface AddUser {
-    add: (account: AddUserParams) => Promise<AddUserResult>
+    add: (user: AddUserParams) => Promise<AddUserResult>
 }

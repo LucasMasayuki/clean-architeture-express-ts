@@ -12,7 +12,9 @@ import MissingParamError from '@/presentation/errors/missing-params-error'
 const mockRequest = (): SignUpControllerRequest => {
     const { password } = faker
     return {
-        name: faker.name,
+        firstName: faker.name,
+        lastName: faker.name,
+        birthDate: new Date(),
         email: faker.email,
         password,
         passwordConfirmation: password,
@@ -53,7 +55,9 @@ describe('SignUp Controller', () => {
         const request = mockRequest()
         await sut.handle(request)
         expect(addUserSpy.params).toEqual({
-            name: request.name,
+            firstName: request.firstName,
+            lastName: request.lastName,
+            birthDate: request.birthDate,
             email: request.email,
             password: request.password,
         })
