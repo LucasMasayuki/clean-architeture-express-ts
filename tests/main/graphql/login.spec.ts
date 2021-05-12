@@ -105,7 +105,6 @@ describe('Login GraphQL', () => {
                     password: '123',
                 },
             })
-            console.log(res)
 
             expect(res.data).toBeFalsy()
             expect(res.errors[0].message).toBe('Unauthorized')
