@@ -1,7 +1,7 @@
 import App from './config/app'
 import loginRoutes from './routes/login-routes'
 
-const port = 3000 || process.env.PORT
+const port = 3000 || parseInt(process.env.PORT, 10)
 
 const routes = [loginRoutes]
 
