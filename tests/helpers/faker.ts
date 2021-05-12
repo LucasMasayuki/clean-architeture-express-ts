@@ -5,4 +5,5 @@ export default {
     password: 'test',
     sentence: 'test test test',
     words: 'test',
+    time: new Date(),
 }

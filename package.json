@@ -17,6 +17,7 @@
   "main": "dist/index.js",
   "scripts": {
     "dev": "nodemon",
+    "start": "tsc && node dist/app.js",
     "lint": "eslint src/**/*.ts",
     "format": "eslint src/**/*.ts --fix",
     "test": "node --expose-gc ./node_modules/.bin/jest --runInBand --logHeapUsage"

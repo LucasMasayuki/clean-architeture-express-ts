@@ -50,7 +50,9 @@ describe('DbAddUser Usecase', () => {
         await sut.add(addUserParams)
 
         expect(addUserRepositorySpy.params).toEqual({
-            name: addUserParams.name,
+            birthDate: addUserParams.birthDate,
+            firstName: addUserParams.firstName,
+            lastName: addUserParams.lastName,
             email: addUserParams.email,
             password: hasherSpy.digest,
         })
