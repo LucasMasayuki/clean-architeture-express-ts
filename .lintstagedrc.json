@@ -1,0 +1,6 @@
+{
+    "*.ts": [
+        "eslint --fix",
+        "bash -c tsc --noEmit true"
+    ]
+}
