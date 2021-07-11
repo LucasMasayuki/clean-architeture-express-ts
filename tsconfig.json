@@ -5,6 +5,7 @@
     "target": "esNext",
     "esModuleInterop": true,
     "sourceMap": true,
+    "skipLibCheck": true,
     "rootDirs": ["src", "tests"],
     "baseUrl": "src",
     "paths": {
