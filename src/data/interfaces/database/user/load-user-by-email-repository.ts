@@ -1,10 +1,5 @@
-export type LoadUserByEmailRepositoryResult = {
-    id: string
-    firstName: string
-    lastName: string
-    password: string
-}
+import { UserModel } from '@/domain/models/user'
 
 export interface LoadUserByEmailRepository {
-    loadByEmail: (email: string) => Promise<LoadUserByEmailRepositoryResult | null>
+    loadByEmail: (email: string) => Promise<UserModel | null>
 }

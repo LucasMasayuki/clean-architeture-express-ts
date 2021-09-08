@@ -3,21 +3,20 @@ import EmailInUseError from '@/presentation/errors/email-in-use-error'
 import { ok, serverError, badRequest, forbidden } from '@/presentation/helpers/http-helper'
 import AuthenticationSpy from '@/tests/presentation/mocks/authentication-spy'
 import throwError from '@/tests/domain/mocks/throw-error'
-import faker from '@/tests/helpers/faker'
 import ValidationSpy from '@/tests/presentation/mocks/validation-spy'
 import ServerError from '@/presentation/errors/server-error'
 import AddUserSpy from '@/tests/presentation/mocks/add-user-spy'
 import MissingParamError from '@/presentation/errors/missing-params-error'
+import faker from 'faker'
 
 const mockRequest = (): SignUpControllerRequest => {
-    const { password } = faker
     return {
-        firstName: faker.name,
-        lastName: faker.name,
+        firstName: faker.name.firstName(),
+        lastName: faker.name.firstName(),
         birthDate: new Date(),
-        email: faker.email,
-        password,
-        passwordConfirmation: password,
+        email: faker.internet.email(),
+        password: faker.internet.password(),
+        passwordConfirmation: faker.internet.password(),
     }
 }
 
@@ -85,7 +84,7 @@ describe('SignUp Controller', () => {
 
     test('Should return 400 if Validation returns an error', async () => {
         const { sut, validationSpy } = makeSut()
-        validationSpy.error = new MissingParamError(faker.words)
+        validationSpy.error = new MissingParamError(faker.random.words())
         const httpResponse = await sut.handle(mockRequest())
         expect(httpResponse).toEqual(badRequest(validationSpy.error))
     })

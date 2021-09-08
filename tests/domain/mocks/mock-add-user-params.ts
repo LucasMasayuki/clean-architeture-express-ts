@@ -1,12 +1,12 @@
-import faker from '@/tests/helpers/faker'
 import { AddUserParams } from '@/domain/usecases/add-user'
+import faker from 'faker'
 
 const mockUserParams = (): AddUserParams => ({
-    firstName: faker.name,
-    birthDate: faker.time,
-    lastName: faker.name,
-    email: faker.email,
-    password: faker.password,
+    firstName: faker.name.firstName(),
+    birthDate: faker.date.recent(),
+    lastName: faker.name.firstName(),
+    email: faker.internet.email(),
+    password: faker.internet.password(),
 })
 
 export default mockUserParams

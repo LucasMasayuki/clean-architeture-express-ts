@@ -1,9 +1,9 @@
 import { Params } from '@/types/authentication'
-import faker from '@/tests/helpers/faker'
+import faker from 'faker'
 
 const mockAuthenticationParams = (): Params => ({
-    email: faker.email,
-    password: faker.password,
+    email: faker.internet.email(),
+    password: faker.internet.password(),
 })
 
 export default mockAuthenticationParams

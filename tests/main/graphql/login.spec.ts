@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import makeApolloServer from '@/tests/main/graphql/helpers'
 import MongoHelper from '@/infra/database/mongodb/mongodb'
 
@@ -6,10 +7,8 @@ import { createTestClient } from 'apollo-server-integration-testing'
 import { mocked } from 'ts-jest/utils'
 import MockDb from '@/tests/infra/database/mongodb/mocks/mock-db'
 import MockClient from '@/tests/infra/database/mongodb/mocks/mock-client'
-import BcryptAdapter from '@/infra/cryptography/bcrypt-adapter'
 import MockCollection from '@/tests/infra/database/mongodb/mocks/mock-collection'
 import jwt from 'jsonwebtoken'
-import bcrypt from 'bcrypt'
 
 let apolloServer: ApolloServer
 
@@ -36,14 +35,18 @@ let mockDb: MockDb
 let mockClient: MockClient
 let mockCollection: MockCollection
 
+const mockedMongoHelper = MongoHelper as jest.Mocked<typeof MongoHelper>
+
 describe('Login GraphQL', () => {
     beforeAll(async () => {
         apolloServer = makeApolloServer()
     })
 
+    afterEach(() => {
+        jest.clearAllMocks()
+    })
+
     beforeEach(() => {
-        mocked(MongoHelper).getDatabase.mockClear()
-        mocked(jwt).sign.mockClear()
         mockDb = new MockDb()
         mockClient = new MockClient('test')
         mockCollection = new MockCollection()
@@ -55,11 +58,11 @@ describe('Login GraphQL', () => {
 
             mockDb.collection.mockImplementation(() => mockCollection)
 
-            mocked(MongoHelper).getDatabase.mockImplementation(async () => {
+            mockedMongoHelper.getDatabase.mockImplementation(async () => {
                 return mockDb
             })
 
-            mocked(MongoHelper).map.mockImplementation(async () => {
+            mockedMongoHelper.map.mockImplementation(async () => {
                 return fakeUser
             })
 
@@ -117,11 +120,11 @@ describe('Login GraphQL', () => {
 
             mockDb.collection.mockImplementation(() => mockCollection)
 
-            mocked(MongoHelper).getDatabase.mockImplementation(async () => {
+            mockedMongoHelper.getDatabase.mockImplementation(async () => {
                 return mockDb
             })
 
-            mocked(MongoHelper).map.mockImplementation(async () => {
+            mockedMongoHelper.map.mockImplementation(async () => {
                 return fakeUser
             })
 

@@ -1,9 +1,7 @@
 import { LoadUserByToken } from '@/domain/usecases/load-user-by-token'
 import { Decrypter } from '@/data/interfaces/cryptography'
-import {
-    LoadUserByTokenRepository,
-    LoadUserByTokenRepositoryResult,
-} from '@/data/interfaces/database/user/load-user-by-token-repository'
+import { LoadUserByTokenRepository } from '@/data/interfaces/database/user/load-user-by-token-repository'
+import { UserModel } from '@/domain/models/user'
 
 export default class DbLoadUserByToken implements LoadUserByToken {
     private readonly loadUserByTokenRepository: LoadUserByTokenRepository
@@ -15,7 +13,7 @@ export default class DbLoadUserByToken implements LoadUserByToken {
         this.loadUserByTokenRepository = loadUserByTokenRepository
     }
 
-    async load(accessToken: string): Promise<LoadUserByTokenRepositoryResult | null> {
+    async load(accessToken: string): Promise<UserModel | null> {
         let token: string
 
         try {

@@ -1,23 +1,23 @@
 import UserMongoRepository from '@/infra/database/mongodb/repositories/user-mongo-repository'
 import MongoHelper from '@/infra/database/mongodb/mongodb'
 
-import { mocked } from 'ts-jest/utils'
 import MockDb from '@/tests/infra/database/mongodb/mocks/mock-db'
 import MockClient from '@/tests/infra/database/mongodb/mocks/mock-client'
-import faker from '@/tests/helpers/faker'
 import mockAddUserParams from '@/tests/domain/mocks/mock-add-user-params'
-import { verify } from 'jsonwebtoken'
+import faker from 'faker'
 import MockCollection from './mocks/mock-collection'
 
 jest.mock('@/infra/database/mongodb/mongodb')
+
+const mockedMongoHelper = MongoHelper as jest.Mocked<typeof MongoHelper>
 
 const getFakeUserRepository = (): UserMongoRepository => {
     return new UserMongoRepository()
 }
 
 describe('UserMongoRepository', () => {
-    beforeAll(async () => {
-        mocked(MongoHelper).getDatabase.mockClear()
+    afterEach(() => {
+        jest.clearAllMocks()
     })
 
     describe('loadByEmail()', () => {
@@ -36,16 +36,16 @@ describe('UserMongoRepository', () => {
             mockDb.findOne.mockImplementation(() => fakeUser)
             mockDb.collection.mockImplementation(() => mockDb)
 
-            mocked(MongoHelper).getDatabase.mockImplementation(async () => {
+            mockedMongoHelper.getDatabase.mockImplementation(async () => {
                 return mockDb
             })
 
-            mocked(MongoHelper).map.mockImplementation(async () => {
+            mockedMongoHelper.map.mockImplementation(async () => {
                 return fakeUser
             })
 
             const UserRepository = getFakeUserRepository()
-            const user = await UserRepository.loadByEmail(faker.email)
+            const user = await UserRepository.loadByEmail(faker.internet.email())
 
             expect(user).toBeTruthy()
             expect(user.id).toBeTruthy()
@@ -61,16 +61,16 @@ describe('UserMongoRepository', () => {
             mockDb.findOne.mockImplementation(() => null)
             mockDb.collection.mockImplementation(() => mockDb)
 
-            mocked(MongoHelper).getDatabase.mockImplementation(async () => {
+            mockedMongoHelper.getDatabase.mockImplementation(async () => {
                 return mockDb
             })
 
-            mocked(MongoHelper).map.mockImplementation(async () => {
+            mockedMongoHelper.map.mockImplementation(async () => {
                 return null
             })
 
             const UserRepository = getFakeUserRepository()
-            const user = await UserRepository.loadByEmail(faker.email)
+            const user = await UserRepository.loadByEmail(faker.internet.email())
 
             expect(user).toBeFalsy()
         })
@@ -88,7 +88,7 @@ describe('UserMongoRepository', () => {
                 return { ops: ['test'] }
             })
 
-            mocked(MongoHelper).getDatabase.mockImplementation(async () => {
+            mockedMongoHelper.getDatabase.mockImplementation(async () => {
                 return mockDb
             })
 
@@ -111,7 +111,7 @@ describe('UserMongoRepository', () => {
                 return { ops: ['test'] }
             })
 
-            mocked(MongoHelper).getDatabase.mockImplementation(async () => {
+            mockedMongoHelper.getDatabase.mockImplementation(async () => {
                 return mockDb
             })
 
@@ -133,12 +133,12 @@ describe('UserMongoRepository', () => {
                 return null
             })
 
-            mocked(MongoHelper).getDatabase.mockImplementation(async () => {
+            mockedMongoHelper.getDatabase.mockImplementation(async () => {
                 return mockDb
             })
 
             const UserRepository = getFakeUserRepository()
-            const exists = await UserRepository.checkByEmail(faker.email)
+            const exists = await UserRepository.checkByEmail(faker.internet.email())
 
             expect(exists).toBe(false)
         })
@@ -156,13 +156,13 @@ describe('UserMongoRepository', () => {
                 return { ops: ['test'] }
             })
 
-            mocked(MongoHelper).getDatabase.mockImplementation(async () => {
+            mockedMongoHelper.getDatabase.mockImplementation(async () => {
                 return mockDb
             })
 
             const UserRepository = getFakeUserRepository()
 
-            const accessToken = faker.uuid
+            const accessToken = faker.datatype.uuid()
             const fakeUserId = '1'
             await UserRepository.updateAccessToken(fakeUserId, accessToken)
 
@@ -180,8 +180,6 @@ describe('UserMongoRepository', () => {
     })
 
     describe('loadByToken()', () => {
-        const { name, email, password, uuid } = faker
-
         test('Should return an user on loadByToken', async () => {
             const mockDb = new MockDb()
             const mockCollection = new MockCollection()
@@ -189,26 +187,26 @@ describe('UserMongoRepository', () => {
 
             const fakeUser = {
                 id: 'id',
-                name,
-                email,
-                password,
+                name: faker.name.firstName(),
+                email: faker.internet.email(),
+                password: faker.internet.password(),
             }
 
             mockClient.connect.mockImplementation(async () => MockClient)
             mockDb.collection.mockImplementation(() => mockCollection)
             mockCollection.findOne.mockImplementation(() => fakeUser)
 
-            mocked(MongoHelper).map.mockImplementation(async () => {
+            mockedMongoHelper.map.mockImplementation(async () => {
                 return fakeUser
             })
 
-            mocked(MongoHelper).getDatabase.mockImplementation(async () => {
+            mockedMongoHelper.getDatabase.mockImplementation(async () => {
                 return mockDb
             })
 
             const UserRepository = getFakeUserRepository()
 
-            const user = await UserRepository.loadByToken(uuid)
+            const user = await UserRepository.loadByToken(faker.datatype.uuid())
 
             expect(user).toBeTruthy()
             expect(user.id).toBeTruthy()
@@ -223,13 +221,13 @@ describe('UserMongoRepository', () => {
             mockDb.collection.mockImplementation(() => mockCollection)
             mockCollection.findOne.mockImplementation(() => null)
 
-            mocked(MongoHelper).getDatabase.mockImplementation(async () => {
+            mockedMongoHelper.getDatabase.mockImplementation(async () => {
                 return mockDb
             })
 
             const UserRepository = getFakeUserRepository()
 
-            const user = await UserRepository.loadByToken(uuid)
+            const user = await UserRepository.loadByToken(faker.datatype.uuid())
             expect(user).toBeFalsy()
         })
     })

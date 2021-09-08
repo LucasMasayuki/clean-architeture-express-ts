@@ -2,10 +2,9 @@ import EmailValidation from '@/validation/validators/email-validation'
 import InvalidParamError from '@/presentation/errors/invalid-param-error'
 import EmailValidatorSpy from '@/tests/validation/mocks/email-validator-spy'
 import throwError from '@/tests/domain/mocks/throw-error'
+import faker from 'faker'
 
-import faker from '@/tests/helpers/faker'
-
-const field = faker.words
+const field = faker.random.words()
 
 type SutTypes = {
     sut: EmailValidation
@@ -25,14 +24,13 @@ describe('Email Validation', () => {
     test('Should return an error if EmailValidator returns false', () => {
         const { sut, emailValidatorSpy } = makeSut()
         emailValidatorSpy.isEmailValid = false
-        const { email } = faker
-        const error = sut.validate({ [field]: email })
+        const error = sut.validate({ [field]: faker.internet.email() })
         expect(error).toEqual(new InvalidParamError(field))
     })
 
     test('Should call EmailValidator with correct email', () => {
         const { sut, emailValidatorSpy } = makeSut()
-        const { email } = faker
+        const email = faker.internet.email()
         sut.validate({ [field]: email })
         expect(emailValidatorSpy.email).toBe(email)
     })

@@ -1,25 +1,14 @@
 /* eslint-disable class-methods-use-this */
-import {
-    AddUserRepository,
-    AddUserRepositoryParams,
-    AddUserRepositoryResult,
-} from '@/data/interfaces/database/user/add-user-repository'
+import { AddUserRepository } from '@/data/interfaces/database/user/add-user-repository'
 
-import {
-    CheckUserByEmailRepository,
-    CheckUserByEmailRepositoryResult,
-} from '@/data/interfaces/database/user/check-user-by-email-repository'
+import { CheckUserByEmailRepository } from '@/data/interfaces/database/user/check-user-by-email-repository'
 
-import {
-    LoadUserByEmailRepository,
-    LoadUserByEmailRepositoryResult,
-} from '@/data/interfaces/database/user/load-user-by-email-repository'
-import {
-    LoadUserByTokenRepository,
-    LoadUserByTokenRepositoryResult,
-} from '@/data/interfaces/database/user/load-user-by-token-repository'
+import { LoadUserByEmailRepository } from '@/data/interfaces/database/user/load-user-by-email-repository'
+import { LoadUserByTokenRepository } from '@/data/interfaces/database/user/load-user-by-token-repository'
 
 import { UpdateAccessTokenRepository } from '@/data/interfaces/database/user/update-access-token-repository'
+import { UserModel } from '@/domain/models/user'
+import { AddUserParams } from '@/domain/usecases/add-user'
 import MongoHelper from '@/infra/database/mongodb/mongodb'
 
 export default class UserMongoRepository
@@ -28,8 +17,9 @@ export default class UserMongoRepository
         CheckUserByEmailRepository,
         AddUserRepository,
         UpdateAccessTokenRepository,
-        LoadUserByTokenRepository {
-    async loadByEmail(email: string): Promise<LoadUserByEmailRepositoryResult> {
+        LoadUserByTokenRepository
+{
+    async loadByEmail(email: string): Promise<UserModel> {
         const database = await MongoHelper.getDatabase()
 
         const user = await database.collection('user').findOne(
@@ -48,7 +38,7 @@ export default class UserMongoRepository
         return user && MongoHelper.map(user)
     }
 
-    async add(data: AddUserRepositoryParams): Promise<AddUserRepositoryResult> {
+    async add(data: AddUserParams): Promise<boolean> {
         const database = await MongoHelper.getDatabase()
         const userCollection = database.collection('user')
 
@@ -72,7 +62,7 @@ export default class UserMongoRepository
         )
     }
 
-    async checkByEmail(email: string): Promise<CheckUserByEmailRepositoryResult> {
+    async checkByEmail(email: string): Promise<boolean> {
         const database = await MongoHelper.getDatabase()
         const userCollection = database.collection('user')
 
@@ -90,7 +80,7 @@ export default class UserMongoRepository
         return user !== null
     }
 
-    async loadByToken(token: string): Promise<LoadUserByTokenRepositoryResult> {
+    async loadByToken(token: string): Promise<UserModel> {
         const database = await MongoHelper.getDatabase()
         const userCollection = database.collection('user')
         const user = await userCollection.findOne(

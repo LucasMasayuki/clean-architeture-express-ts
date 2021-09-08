@@ -1,9 +1,9 @@
 import MongoHelper from '@/infra/database/mongodb/mongodb'
 import LogMongoRepository from '@/infra/database/mongodb/repositories/log-mongo-repository'
 
-import faker from '@/tests/helpers/faker'
 import { mocked } from 'ts-jest/utils'
 import MockDate from 'mockdate'
+import faker from 'faker'
 import MockClient from './mocks/mock-client'
 import MockDb from './mocks/mock-db'
 
@@ -45,8 +45,9 @@ describe('LogMongoRepository', () => {
         const dbSpy = jest.spyOn(mockDb, 'insertOne')
 
         const fakeLogMongoRepository = getFakeLogMongoRepository()
-        await fakeLogMongoRepository.logError(faker.words)
-        const stack = faker.words
+        const words = faker.random.words()
+        await fakeLogMongoRepository.logError(words)
+        const stack = words
 
         expect(dbSpy).toHaveBeenCalledWith({ stack, date: now })
     })

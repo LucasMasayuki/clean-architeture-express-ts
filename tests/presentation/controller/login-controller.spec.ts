@@ -4,12 +4,12 @@ import MissingParamError from '@/presentation/errors/missing-params-error'
 import ValidationSpy from '@/tests/presentation/mocks/validation-spy'
 import throwError from '@/tests/domain/mocks/throw-error'
 
-import faker from '@/tests/helpers/faker'
+import faker from 'faker'
 import AuthenticationSpy from '../mocks/authentication-spy'
 
 const mockRequest = (): LoginControllerRequest => ({
-    email: faker.email,
-    password: faker.password,
+    email: faker.internet.email(),
+    password: faker.internet.password(),
 })
 
 type SutTypes = {
@@ -69,7 +69,7 @@ describe('Login Controller', () => {
 
     test('Should return 400 if Validation returns an error', async () => {
         const { sut, validationSpy } = makeSut()
-        validationSpy.error = new MissingParamError(faker.words)
+        validationSpy.error = new MissingParamError(faker.random.words())
         const httpResponse = await sut.handle(mockRequest())
         expect(httpResponse).toEqual(badRequest(validationSpy.error))
     })

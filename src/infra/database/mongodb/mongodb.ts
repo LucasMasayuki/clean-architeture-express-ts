@@ -10,10 +10,10 @@ class MongoDb {
     private client!: MongoClient
 
     constructor() {
-        this.uri = `mongodb://localhost:${env.port}/petdiary`
+        this.uri = `mongodb://localhost:${env.port}/host`
 
         if (env.nodeEnv === 'production') {
-            this.uri = `mongodb+srv://${env.mongoUser}:${env.mongoPassword}@petdiary.acqxz.mongodb.net/${env.mongDb}?retryWrites=true&w=majority`
+            this.uri = `mongodb+srv://${env.mongoUser}:${env.mongoPassword}@host.acqxz.mongodb.net/${env.mongDb}?retryWrites=true&w=majority`
         }
     }
 

@@ -14,10 +14,8 @@ jest.mock('@/infra/database/mongodb/mongodb')
 jest.mock('jsonwebtoken')
 
 describe('Login Routes', () => {
-    beforeAll(async () => {
-        mocked(MongoHelper).getDatabase.mockClear()
-        mocked(MongoHelper).map.mockClear()
-        mocked(jwt).sign.mockClear()
+    afterEach(() => {
+        jest.clearAllMocks()
     })
 
     describe('POST /login', () => {

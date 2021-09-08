@@ -1,8 +1,8 @@
 import { Encrypter } from '@/data/interfaces/cryptography'
-import faker from '@/tests/helpers/faker'
+import faker from 'faker'
 
 export default class EncrypterSpy implements Encrypter {
-    ciphertext = faker.uuid
+    ciphertext = faker.datatype.uuid()
 
     plaintext: string
 
