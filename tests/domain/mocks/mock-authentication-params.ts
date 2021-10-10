@@ -1,9 +1,9 @@
-import { Params } from '@/types/authentication'
 import faker from 'faker'
+import { AuthenticationParams } from '@/domain/usecases/authentication'
 
-const mockAuthenticationParams = (): Params => ({
-    email: faker.internet.email(),
-    password: faker.internet.password(),
+const mockAuthenticationParams = (): AuthenticationParams => ({
+  email: faker.internet.email(),
+  password: faker.internet.password()
 })
 
 export default mockAuthenticationParams

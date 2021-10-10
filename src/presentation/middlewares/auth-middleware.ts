@@ -1,34 +1,33 @@
 import { Middleware } from '@/presentation/interfaces/middlewares'
-import { forbidden, ok, serverError } from '@/presentation/helpers/http-helper'
-import AccessDeniedError from '@/presentation/errors/access_denied_error'
+import { forbidden, HttpResponse, ok, serverError } from '@/presentation/helpers/http-helper'
 import { LoadUserByToken } from '@/domain/usecases/load-user-by-token'
-import { HttpResponse } from '../interfaces/http-response'
 
 export type AuthMiddlewareRequest = {
-    accessToken?: string
+  token?: string
 }
 
 export class AuthMiddleware implements Middleware {
-    private readonly loadUserByToken: LoadUserByToken
+  private readonly loadUserByToken: LoadUserByToken
 
-    constructor(loadUserByToken: LoadUserByToken) {
-        this.loadUserByToken = loadUserByToken
-    }
+  constructor (loadUserByToken: LoadUserByToken) {
+    this.loadUserByToken = loadUserByToken
+  }
 
-    async handle(request: AuthMiddlewareRequest): Promise<HttpResponse> {
-        try {
-            const { accessToken } = request
+  async handle (request: AuthMiddlewareRequest): Promise<HttpResponse> {
+    try {
+      const { token } = request
 
-            if (accessToken) {
-                const user = await this.loadUserByToken.load(accessToken)
-                if (user) {
-                    return ok({ userId: user.id })
-                }
-            }
+      if (token != null) {
+        const user = await this.loadUserByToken.load(token)
 
-            return forbidden(new AccessDeniedError())
-        } catch (error) {
-            return serverError(error)
+        if (user != null) {
+          return ok({ userId: user.id })
         }
+      }
+
+      return forbidden()
+    } catch (error) {
+      return serverError(error)
     }
+  }
 }

@@ -2,5 +2,5 @@
     "watch": ["src"],
     "ext": "ts,json",
     "ignore": ["__test__/**"],
-    "exec": "ts-node -r tsconfig-paths/register ./src/main/server.ts"
+    "exec": "ts-node -r tsconfig-paths/register -r dotenv/config ./src/main/server.ts"
   }

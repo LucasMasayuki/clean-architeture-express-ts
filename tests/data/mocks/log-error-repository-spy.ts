@@ -1,13 +1,12 @@
-import { LogErrorRepository } from '@/data/interfaces/database/log/log-error-repository'
+import { LogError } from '@/infra/database/entities/log-error.entity'
+import { SaveLogErrorsRepository } from '../interfaces/database/log/save-log-errors-repository'
 
-export default class LogErrorRepositorySpy implements LogErrorRepository {
-    constructor(stack = '') {
-        this.stack = stack
-    }
+export default class LogErrorRepositorySpy implements SaveLogErrorsRepository {
+  logErrorEntity: LogError | undefined
 
-    stack: string
+  async logError (entity: LogError): Promise<LogError | undefined> {
+    this.logErrorEntity = entity
 
-    async logError(stack: string): Promise<void> {
-        this.stack = stack
-    }
+    return this.logErrorEntity
+  }
 }

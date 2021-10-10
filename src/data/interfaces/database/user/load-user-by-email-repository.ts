@@ -1,5 +1,6 @@
-import { UserModel } from '@/domain/models/user'
+
+import { User } from '@/infra/database/entities/user.entity'
 
 export interface LoadUserByEmailRepository {
-    loadByEmail: (email: string) => Promise<UserModel | null>
+  loadByEmail: (email: string) => Promise<User | undefined>
 }

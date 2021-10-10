@@ -1,144 +1,68 @@
-import MongoHelper from '@/infra/database/mongodb/mongodb'
+/* eslint-disable import/first */
+
+// Mocked need to be import first import the others dependencies
+const mockLoadUserRepository = jest.fn()
 
 import request from 'supertest'
 import { mocked } from 'ts-jest/utils'
-import MockDb from '@/tests/infra/database/mongodb/mocks/mock-db'
-import MockClient from '@/tests/infra/database/mongodb/mocks/mock-client'
-import HttpStatus from '@/shared/enums/httpStatus'
-import App from '@/main/config/app'
-import LoginRoutes from '@/main/routes/login-routes'
-import BcryptAdapter from '@/infra/cryptography/bcrypt-adapter'
-import jwt from 'jsonwebtoken'
 
-jest.mock('@/infra/database/mongodb/mongodb')
+import App from '@/main/config/app'
+import AuthenticationRoutes from '@/main/routes/authentication-routes'
+import jwt from 'jsonwebtoken'
+import Sha256Adapter from '@/infra/cryptography/sha256-adapter'
+import { HttpStatus } from '@/presentation/helpers/http-helper'
+
+jest.mock('@/infra/database/repositories/users/load-users-repository', () => {
+  return jest.fn().mockImplementation(() => {
+    return { loadByEmail: mockLoadUserRepository }
+  })
+})
+
 jest.mock('jsonwebtoken')
 
 describe('Login Routes', () => {
-    afterEach(() => {
-        jest.clearAllMocks()
+  afterEach(() => {
+    jest.clearAllMocks()
+  })
+
+  describe('POST /login', () => {
+    it('Should return 200 on login', async () => {
+      const sha256Adapter = new Sha256Adapter()
+      const fakeUser = {
+        id: 'test',
+        name: 'test',
+        password: await sha256Adapter.hash('any_password')
+      }
+
+      mockLoadUserRepository.mockReturnValue(fakeUser)
+
+      mocked(jwt).sign.mockImplementation(() => {
+        return 'test'
+      })
+
+      const routers = [AuthenticationRoutes]
+      const app = new App(routers, 3000)
+
+      await request(app.getServer())
+        .post('/api/v1/login')
+        .send({
+          email: 'any_email@gmail.com',
+          password: 'any_password'
+        })
+        .expect(HttpStatus.OK)
     })
 
-    describe('POST /login', () => {
-        test('Should return 200 on login', async () => {
-            const salt = 12
-            const bcryptAdapter = new BcryptAdapter(salt)
-            const fakeUser = {
-                id: 'test',
-                name: 'test',
-                password: await bcryptAdapter.hash('test'),
-            }
+    it('Should return 401 on login', async () => {
+      const routers = [AuthenticationRoutes]
+      const app = new App(routers, 3000)
 
-            const mockDb = new MockDb()
-            const mockClient = new MockClient('test')
-
-            mockClient.connect.mockImplementation(async () => MockClient)
-            mockDb.findOne.mockImplementation(() => fakeUser)
-            mockDb.collection.mockImplementation(() => mockDb)
-
-            mocked(MongoHelper).getDatabase.mockImplementation(async () => {
-                return mockDb
-            })
-
-            mocked(MongoHelper).map.mockImplementation(async () => {
-                return fakeUser
-            })
-
-            mocked(jwt).sign.mockImplementation(async () => {
-                return 'test'
-            })
-
-            const routers = [LoginRoutes]
-            const app = new App(routers, 3000)
-
-            await request(app.getServer())
-                .post('/api/v1/login')
-                .send({
-                    email: 'lucasmasayuki@gmail.com',
-                    password: 'test',
-                })
-                .expect(HttpStatus.OK)
+      await request(app.getServer())
+        .post('/api/v1/login')
+        .send({
+          email: 'test.test@gmail.com',
+          password: '123'
         })
-
-        test('Should return 401 on login', async () => {
-            const routers = [LoginRoutes]
-            const app = new App(routers, 3000)
-
-            await request(app.getServer())
-                .post('/api/v1/login')
-                .send({
-                    email: 'test.test@gmail.com',
-                    password: '123',
-                })
-                .expect(HttpStatus.UNAUTHORIZED)
-        })
+        .expect(HttpStatus.UNAUTHORIZED)
     })
-
-    describe('POST /signup', () => {
-        test('Should return 200 on signup', async () => {
-            const mockDb = new MockDb()
-            const mockClient = new MockClient('test')
-
-            mockClient.connect.mockImplementation(async () => MockClient)
-            mockDb.findOne.mockImplementation(() => null)
-            mockDb.insertOne.mockImplementation(() => {
-                return { ops: ['test'] }
-            })
-            mockDb.collection.mockImplementation(() => mockDb)
-
-            mocked(MongoHelper).getDatabase.mockImplementation(async () => {
-                return mockDb
-            })
-
-            const routers = [LoginRoutes]
-            const app = new App(routers, 3000)
-
-            await request(app.getServer())
-                .post('/api/v1/signup')
-                .send({
-                    firstName: 'Lucas',
-                    lastName: 'Masayuki',
-                    birthDate: new Date(),
-                    email: 'lucas@gmail.com',
-                    password: '123',
-                    passwordConfirmation: '123',
-                })
-                .expect(200)
-        })
-
-        test('Should return 403 on signup', async () => {
-            const salt = 12
-            const bcryptAdapter = new BcryptAdapter(salt)
-            const fakeUser = {
-                id: 'test',
-                name: 'test',
-                password: await bcryptAdapter.hash('test'),
-            }
-
-            const mockDb = new MockDb()
-            const mockClient = new MockClient('test')
-
-            mockClient.connect.mockImplementation(async () => MockClient)
-            mockDb.findOne.mockImplementation(() => fakeUser)
-            mockDb.collection.mockImplementation(() => mockDb)
-
-            mocked(MongoHelper).getDatabase.mockImplementation(async () => {
-                return mockDb
-            })
-
-            const routers = [LoginRoutes]
-            const app = new App(routers, 3000)
-
-            await request(app.getServer())
-                .post('/api/v1/signup')
-                .send({
-                    firstName: 'Lucas',
-                    lastName: 'Masayuki',
-                    birthDate: new Date(),
-                    email: 'lucas@gmail.com',
-                    password: '123',
-                    passwordConfirmation: '123',
-                })
-                .expect(403)
-        })
-    })
+  })
 })

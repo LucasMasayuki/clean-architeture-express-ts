@@ -1,18 +1,26 @@
+import { verify, sign } from 'jsonwebtoken'
+
 import { Decrypter, Encrypter } from '@/data/interfaces/cryptography'
-import jwt from 'jsonwebtoken'
 
 export default class JwtAdapter implements Encrypter, Decrypter {
-    private readonly secret: string
+  private readonly secret: string
 
-    constructor(secret: string) {
-        this.secret = secret
-    }
+  private readonly expirationIn: number
 
-    async encrypt(plaintext: string): Promise<string> {
-        return jwt.sign({ id: plaintext }, this.secret)
-    }
+  constructor (secret: string, expirationIn: number) {
+    this.expirationIn = expirationIn
+    this.secret = secret
+  }
 
-    async decrypt(ciphertext: string): Promise<string> {
-        return jwt.verify(ciphertext, this.secret) as string
-    }
+  getExpectedExpirationTime (): number {
+    return new Date().getTime() - this.expirationIn
+  }
+
+  async encrypt (plaintext: string): Promise<string> {
+    return sign({ id: plaintext }, this.secret, { expiresIn: this.expirationIn })
+  }
+
+  async decrypt (ciphertext: string): Promise<string> {
+    return (await verify(ciphertext, this.secret)) as string
+  }
 }

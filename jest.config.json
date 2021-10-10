@@ -1,17 +1,24 @@
 {
-    "testPathIgnorePatterns": ["<rootDir>/node_modules/"],
-    "bail": 1,
-    "clearMocks": true,
-    "collectCoverage": false,
-    "collectCoverageFrom": ["src/**/*.ts"],
-    "coverageReporters": ["lcov", "text"],
-    "moduleNameMapper": {
-      "@/tests/(.*)": "<rootDir>/tests/$1",
-      "@/(.*)": "<rootDir>/src/$1"
+  "testPathIgnorePatterns": ["<rootDir>/node_modules/"],
+  "bail": 1,
+  "clearMocks": true,
+  "collectCoverage": false,
+  "coverageDirectory": "coverage",
+  "coverageProvider": "babel",
+  "collectCoverageFrom": ["src/**/*.ts"],
+  "coverageReporters": ["lcov", "text"],
+  "moduleNameMapper": {
+    "@/tests/(.*)": "<rootDir>/tests/$1",
+    "@/(.*)": "<rootDir>/src/$1"
+  },
+  "transform": {
+    "^.+\\.ts$": "ts-jest"
     },
-    "transform": {
-      "^.+\\.ts$": "ts-jest"
-    },
-    "preset": "ts-jest",
-    "testEnvironment": "node"
+  "roots": [
+    "<rootDir>/src",
+    "<rootDir>/tests"
+  ],
+  "setupFiles": ["dotenv/config"],
+  "preset": "ts-jest",
+  "testEnvironment": "node"
 }

@@ -1,27 +1,24 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { Controller } from '@/presentation/interfaces/controller'
-import { HttpResponse } from '@/presentation/interfaces/http-response'
-import { LogErrorRepository } from '@/data/interfaces/database/log/log-error-repository'
 import HttpStatus from '@/shared/enums/httpStatus'
+import { HttpResponse } from '@/presentation/helpers/http-helper'
+import Controller from '@/presentation/controllers/controller'
+import { SaveLogErrorsRepository } from '@/data/interfaces/database/log/save-log-errors-repository'
+import { LogError } from '@/infra/database/entities/log-error.entity'
 
-export default class LogControllerDecorator implements Controller {
-    private readonly controller: Controller
+export default class LogControllerDecorator extends Controller {
+  constructor (private readonly controller: Controller, private readonly logErrorRepository: SaveLogErrorsRepository) {
+    super()
+  }
 
-    private readonly logErrorRepository: LogErrorRepository
+  async perform (request: any): Promise<HttpResponse> {
+    const httpResponse = await this.controller.handle(request)
 
-    constructor(controller: Controller, logErrorRepository: LogErrorRepository) {
-        this.controller = controller
-        this.logErrorRepository = logErrorRepository
+    if (httpResponse.statusCode === HttpStatus.ERROR) {
+      const logError = new LogError()
+      logError.stack = httpResponse.data.stack
+
+      await this.logErrorRepository.logError(logError)
     }
 
-    async handle(request: any): Promise<HttpResponse> {
-        const httpResponse = await this.controller.handle(request)
-
-        if (httpResponse.statusCode === HttpStatus.ERROR) {
-            await this.logErrorRepository.logError(httpResponse.body.stack)
-        }
-
-        return httpResponse
-    }
+    return httpResponse
+  }
 }

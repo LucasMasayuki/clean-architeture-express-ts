@@ -1,26 +1,19 @@
-import { UserModel } from '@/domain/models/user'
 import { LoadUserByToken } from '@/domain/usecases/load-user-by-token'
-import faker from 'faker'
+import { User } from '@/infra/database/entities/user.entity'
+import UserMock from '@/tests/infra/database/mocks/entities/user-mock.entity'
 
 export default class LoadUserByTokenSpy implements LoadUserByToken {
-    accessToken: string
+  accessToken: string
 
-    result: UserModel | null
+  result: User | null
 
-    constructor() {
-        this.accessToken = ''
-        this.result = {
-            id: faker.datatype.uuid(),
-            email: faker.internet.email(),
-            birthDate: faker.date.recent(),
-            firstName: faker.name.firstName(),
-            lastName: faker.name.lastName(),
-            password: faker.internet.password(),
-        }
-    }
+  constructor () {
+    this.accessToken = ''
+    this.result = new UserMock()
+  }
 
-    async load(accessToken: string): Promise<UserModel | null> {
-        this.accessToken = accessToken
-        return this.result
-    }
+  async load (accessToken: string): Promise<User | null> {
+    this.accessToken = accessToken
+    return this.result
+  }
 }

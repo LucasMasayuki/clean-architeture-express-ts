@@ -1,17 +1,18 @@
-import { Encrypter } from '@/data/interfaces/cryptography'
 import faker from 'faker'
 
+import { Encrypter } from '@/data/interfaces/cryptography'
+
 export default class EncrypterSpy implements Encrypter {
-    ciphertext = faker.datatype.uuid()
+  ciphertext = faker.datatype.uuid()
 
-    plaintext: string
+  plaintext: string
 
-    constructor(plaintext = '') {
-        this.plaintext = plaintext
-    }
+  constructor (plaintext = '') {
+    this.plaintext = plaintext
+  }
 
-    async encrypt(plaintext: string): Promise<string> {
-        this.plaintext = plaintext
-        return this.ciphertext
-    }
+  async encrypt (plaintext: string): Promise<string> {
+    this.plaintext = plaintext
+    return this.ciphertext
+  }
 }

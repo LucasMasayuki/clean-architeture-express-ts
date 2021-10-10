@@ -1,20 +1,20 @@
 import { HashComparer } from '@/data/interfaces/cryptography'
 
 export default class HashComparerSpy implements HashComparer {
-    plaintext: string
+  plaintext: string
 
-    digest: string
+  digest: string
 
-    isValid = true
+  isValid = true
 
-    constructor(plainText = '', digest = '') {
-        this.plaintext = plainText
-        this.digest = digest
-    }
+  constructor (plainText = '', digest = '') {
+    this.plaintext = plainText
+    this.digest = digest
+  }
 
-    async compare(plaintext: string, digest: string): Promise<boolean> {
-        this.plaintext = plaintext
-        this.digest = digest
-        return this.isValid
-    }
+  async compare (plaintext: string, digest: string): Promise<boolean> {
+    this.plaintext = plaintext
+    this.digest = digest
+    return this.isValid
+  }
 }

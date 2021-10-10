@@ -1,5 +1,5 @@
-import { UserModel } from '../models/user'
+import { User } from '@/infra/database/entities/user.entity'
 
 export interface LoadUserByToken {
-    load: (accessToken: string) => Promise<UserModel | null>
+  load: (accessToken: string) => Promise<User | null>
 }

@@ -1,5 +1,5 @@
 const throwError = (): never => {
-    throw new Error()
+  throw new Error()
 }
 
 export default throwError

@@ -1,28 +1,29 @@
-import { Controller } from '@/presentation/interfaces/controller'
-import HttpStatus from '@/shared/enums/httpStatus'
-
 import { UserInputError, AuthenticationError, ForbiddenError, ApolloError } from 'apollo-server-express'
 
+import HttpStatus from '@/shared/enums/httpStatus'
+import Controller from '@/presentation/controllers/controller'
+
 const adaptResolver = async (controller: Controller, args?: any, context?: any): Promise<any> => {
-    const request = {
-        ...(args || {}),
-        userId: context?.req?.userId,
-    }
+  const request = {
+    // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
+    ...(args || {}),
+    userId: context?.req?.userId
+  }
 
-    const httpResponse = await controller.handle(request)
+  const httpResponse = await controller.handle(request)
 
-    switch (httpResponse.statusCode) {
-        case HttpStatus.OK:
-        case HttpStatus.NO_CONTENT:
-            return httpResponse.body
-        case HttpStatus.BAD_REQUEST:
-            throw new UserInputError(httpResponse.body.message)
-        case HttpStatus.UNAUTHORIZED:
-            throw new AuthenticationError(httpResponse.body.message)
-        case HttpStatus.FORBIDDEN:
-            throw new ForbiddenError(httpResponse.body.message)
-        default:
-            throw new ApolloError(httpResponse.body.message)
-    }
+  switch (httpResponse.statusCode) {
+    case HttpStatus.OK:
+    case HttpStatus.NO_CONTENT:
+      return httpResponse.data
+    case HttpStatus.BAD_REQUEST:
+      throw new UserInputError(httpResponse.data.message)
+    case HttpStatus.UNAUTHORIZED:
+      throw new AuthenticationError(httpResponse.data.message)
+    case HttpStatus.FORBIDDEN:
+      throw new ForbiddenError(httpResponse.data.message)
+    default:
+      throw new ApolloError(httpResponse.data.message)
+  }
 }
 export default adaptResolver

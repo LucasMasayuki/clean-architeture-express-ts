@@ -1,10 +1,10 @@
+import LogErrorsRepository from '@/infra/database/repositories/log-errors/log-errors-repository'
 import LogControllerDecorator from '@/main/decorators/log-controller-decorator'
-import LogMongoRepository from '@/infra/database/mongodb/repositories/log-mongo-repository'
-import { Controller } from '@/presentation/interfaces/controller'
+import Controller from '@/presentation/controllers/controller'
 
 const makeLogControllerDecorator = (controller: Controller): Controller => {
-    const logMongoRepository = new LogMongoRepository()
-    return new LogControllerDecorator(controller, logMongoRepository)
+  const logErrorRepository = new LogErrorsRepository()
+  return new LogControllerDecorator(controller, logErrorRepository)
 }
 
 export default makeLogControllerDecorator

@@ -1,9 +1,6 @@
 import App from './config/app'
-import loginRoutes from './routes/login-routes'
+import env from './config/env'
+import { routes } from './routes'
 
-const port = process.env.PORT || '3000'
-
-const routes = [loginRoutes]
-
-const app = new App(routes, parseInt(port, 10))
+const app = new App(routes, env.port)
 app.listen()

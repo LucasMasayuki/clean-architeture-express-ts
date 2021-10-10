@@ -1,34 +1,34 @@
 import { AddUser, AddUserParams, AddUserResult } from '@/domain/usecases/add-user'
 import { Hasher } from '@/data/interfaces/cryptography'
-import { AddUserRepository } from '@/data/interfaces/database/user/add-user-repository'
-import { CheckUserByEmailRepository } from '@/data/interfaces/database/user/check-user-by-email-repository'
+import { SaveUserRepository } from '../interfaces/database/user/save-user-repository'
+import { User } from '@/infra/database/entities/user.entity'
+import { LoadUserByEmailRepository } from '../interfaces/database/user/load-user-by-email-repository'
 
 export default class DbAddUser implements AddUser {
-    private readonly hasher: Hasher
+  constructor (
+    private readonly hasher: Hasher,
+    private readonly saveUserRepository: SaveUserRepository,
+    private readonly loadUserRepository: LoadUserByEmailRepository
+  ) {
+  }
 
-    private readonly addUserRepository: AddUserRepository
+  async add (params: AddUserParams): Promise<AddUserResult> {
+    const existentUser = await this.loadUserRepository.loadByEmail(params.email)
 
-    private readonly checkUserByEmailRepository: CheckUserByEmailRepository
+    let isValid = false
+    if (existentUser == null) {
+      const hashedPassword = await this.hasher.hash(params.password)
+      const entity = new User()
+      entity.birthDate = params.birthDate
+      entity.password = hashedPassword
+      entity.firstName = params.firstName
+      entity.lastName = params.lastName
+      entity.email = params.email
 
-    constructor(
-        hasher: Hasher,
-        addUserRepository: AddUserRepository,
-        checkUserByEmailRepository: CheckUserByEmailRepository,
-    ) {
-        this.hasher = hasher
-        this.checkUserByEmailRepository = checkUserByEmailRepository
-        this.addUserRepository = addUserRepository
+      const user = await this.saveUserRepository.saveUser(entity)
+      isValid = user != null
     }
 
-    async add(userData: AddUserParams): Promise<AddUserResult> {
-        const exists = await this.checkUserByEmailRepository.checkByEmail(userData.email)
-
-        let isValid = false
-        if (!exists) {
-            const hashedPassword = await this.hasher.hash(userData.password)
-            isValid = await this.addUserRepository.add({ ...userData, password: hashedPassword })
-        }
-
-        return isValid
-    }
+    return isValid
+  }
 }

@@ -1,34 +1,26 @@
 import { LoadUserByToken } from '@/domain/usecases/load-user-by-token'
 import { Decrypter } from '@/data/interfaces/cryptography'
-import { LoadUserByTokenRepository } from '@/data/interfaces/database/user/load-user-by-token-repository'
-import { UserModel } from '@/domain/models/user'
+import { User } from '@/infra/database/entities/user.entity'
+import { LoadUserByIdRepository } from '../interfaces/database/user/load-user-by-id-repository'
 
 export default class DbLoadUserByToken implements LoadUserByToken {
-    private readonly loadUserByTokenRepository: LoadUserByTokenRepository
+  constructor (private readonly userRepository: LoadUserByIdRepository, private readonly decrypter: Decrypter) {
+  }
 
-    private readonly decrypter: Decrypter
+  async load (accessToken: string): Promise<User | null> {
+    let userId: string
 
-    constructor(decrypter: Decrypter, loadUserByTokenRepository: LoadUserByTokenRepository) {
-        this.decrypter = decrypter
-        this.loadUserByTokenRepository = loadUserByTokenRepository
+    try {
+      userId = await this.decrypter.decrypt(accessToken)
+    } catch (error) {
+      return null
     }
 
-    async load(accessToken: string): Promise<UserModel | null> {
-        let token: string
-
-        try {
-            token = await this.decrypter.decrypt(accessToken)
-        } catch (error) {
-            return null
-        }
-
-        if (token) {
-            const user = await this.loadUserByTokenRepository.loadByToken(accessToken)
-            if (user) {
-                return user
-            }
-        }
-
-        return null
+    const user = await this.userRepository.loadById(parseInt(userId, 10))
+    if (user != null) {
+      return user
     }
+
+    return null
+  }
 }

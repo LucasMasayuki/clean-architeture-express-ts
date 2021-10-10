@@ -1,24 +1,31 @@
-import { Authentication } from '@/domain/usecases/authentication'
-import { Params, Result } from '@/types/authentication'
 import faker from 'faker'
 
+import {
+  Authentication,
+  AuthenticationParams,
+  AuthenticationResult
+} from '@/domain/usecases/authentication'
+
 export default class AuthenticationSpy implements Authentication {
-    params: Params
+  params: AuthenticationParams
 
-    result: Result | null = {
-        accessToken: faker.datatype.uuid(),
-        name: faker.name.firstName(),
-    }
+  result: AuthenticationResult | null = {
+    accessToken: faker.datatype.uuid(),
+    expiratesIn: faker.datatype.number(),
+    typeOfToken: 'bearer'
+  }
 
-    constructor() {
-        this.params = {
-            email: '',
-            password: '',
-        }
+  constructor () {
+    this.params = {
+      email: '',
+      password: ''
     }
+  }
 
-    async auth(params: Params): Promise<Result | null> {
-        this.params = params
-        return this.result
-    }
+  async auth (
+    params: AuthenticationParams
+  ): Promise<AuthenticationResult | null> {
+    this.params = params
+    return this.result
+  }
 }

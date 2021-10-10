@@ -6,6 +6,11 @@
     "esModuleInterop": true,
     "sourceMap": true,
     "skipLibCheck": true,
+    "strict": true,
+    "noImplicitOverride": true,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
     "rootDirs": ["src", "tests"],
     "baseUrl": "src",
     "paths": {

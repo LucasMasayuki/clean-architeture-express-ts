@@ -1,5 +1,14 @@
-import { Params, Result } from '@/types/authentication'
+export type AuthenticationParams = {
+  email: string
+  password: string
+}
+
+export type AuthenticationResult = {
+  accessToken: string
+  typeOfToken: string
+  expiratesIn: number
+}
 
 export interface Authentication {
-    auth: (authenticationParams: Params) => Promise<Result | null>
+  auth: (authenticationParams: AuthenticationParams) => Promise<AuthenticationResult | null>
 }
