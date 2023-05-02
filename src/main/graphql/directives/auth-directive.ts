@@ -1,27 +1,30 @@
-import { GraphQLField, defaultFieldResolver } from 'graphql'
-import { SchemaDirectiveVisitor, ForbiddenError } from 'apollo-server-express'
 
-import makeAuthMiddleware from '@/main/factories/middlewares/auth-middlewares-factory'
-import { HttpStatus } from '@/presentation/helpers/http-helper'
+import { IocContainer } from '@/main/ioc-containers/inversify.config'
+import { AuthMiddleware } from '@/presentation/middlewares/auth-middleware'
+import { getDirective, MapperKind, mapSchema } from '@graphql-tools/utils'
+import { ForbiddenError } from 'apollo-server-express'
+import { GraphQLSchema } from 'graphql'
 
-export default class AuthDirective extends SchemaDirectiveVisitor {
-  override visitFieldDefinition (field: GraphQLField<any, any>): any {
-    const { resolve = defaultFieldResolver } = field
-
-    field.resolve = async (parent, args, context, info) => {
-      const authHeader = context?.req?.headers?.authorization
-      const bearerToken = authHeader?.split(' ')[1]
-      const request = {
-        accessToken: bearerToken
+export const authDirectiveTransformer = (schema: GraphQLSchema): GraphQLSchema => {
+  return mapSchema(schema, {
+    [MapperKind.OBJECT_FIELD]: (fieldConfig) => {
+      const authDirective = getDirective(schema, fieldConfig, 'auth')
+      if (authDirective != null) {
+        const { resolve } = fieldConfig
+        fieldConfig.resolve = async (parent, args, context, info) => {
+          const request = {
+            token: context?.req?.headers?.['x-access-token']
+          }
+          const httpResponse = await IocContainer.resolve(AuthMiddleware).handle(request)
+          if (httpResponse.statusCode === 200) {
+            Object.assign(context?.req, httpResponse.data)
+            return resolve?.call(this, parent, args, context, info)
+          } else {
+            throw new ForbiddenError(httpResponse.data.message)
+          }
+        }
       }
-
-      const httpResponse = await makeAuthMiddleware().handle(request)
-      if (httpResponse.statusCode === HttpStatus.OK) {
-        Object.assign(context?.req, httpResponse.data)
-        return resolve.call(this, parent, args, context, info)
-      }
-
-      throw new ForbiddenError(httpResponse.data.message)
+      return fieldConfig
     }
-  }
+  })
 }

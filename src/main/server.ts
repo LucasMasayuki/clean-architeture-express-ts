@@ -1,6 +1,12 @@
-import App from './config/app'
+import logger from '@/infra/gateways/winston-logger'
 import env from './config/env'
-import { routes } from './routes'
+import DbConnection from '@/infra/database/helpers/db-connection'
+import { initializeApp } from './config/app'
 
-const app = new App(routes, env.port)
-app.listen()
+DbConnection.getInstance()
+  .connect()
+  .then(async () => {
+    const app = await initializeApp()
+    app.listen(env.port, () => logger.info(`Server running at http://localhost:${env.port}`))
+  })
+  .catch(console.error)

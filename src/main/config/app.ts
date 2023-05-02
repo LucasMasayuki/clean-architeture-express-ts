@@ -1,57 +1,22 @@
-import express, { Router } from 'express'
+import { setupRoutes } from '@/main/config/routes'
+import express, { Express } from 'express'
+import env from './env'
+// import { setupCrons } from './cron'
+import { setupMiddlewares } from './middleware'
+import { setupSwagger } from './swagger'
+// import initApolloServer from './apollo-server'
 
-import cookieParser from 'cookie-parser'
-import logger from 'morgan'
+export const initializeApp = async (): Promise<Express> => {
+  const app = express()
 
-import DbConnection from '@/infra/database/helpers/db-connection'
-import cors from '../middlewares/cors'
-import contentType from '../middlewares/content-type'
-import bodyParser from '../middlewares/body-parser'
-import initApolloServer from './apollo-server'
-import helmet from 'helmet'
+  setupMiddlewares(app)
+  // setupCrons(app)
+  await setupRoutes(app)
+  // initApolloServer(app) remove graphql temporary
 
-class App {
-  private readonly app: express.Application
-
-  public port: number
-
-  constructor (routes: Router[], port: number) {
-    this.app = express()
-    this.port = port
-
-    this.initializeMiddlewares()
-    this.initializeRoutes(routes)
-    initApolloServer(this.app)
+  if (env.nodeEnv !== 'production') {
+    setupSwagger(app)
   }
 
-  private initializeMiddlewares (): void {
-    this.app.use(cors)
-    this.app.use(contentType)
-    this.app.use(logger('dev'))
-    this.app.use(helmet())
-    this.app.use(bodyParser)
-    this.app.use(express.urlencoded({ extended: false }))
-    this.app.use(cookieParser())
-  }
-
-  private initializeRoutes (routes: Router[]): void {
-    routes.forEach((route: Router) => {
-      this.app.use(route)
-    })
-  }
-
-  public getServer (): express.Application {
-    return this.app
-  }
-
-  public listen (): void {
-    DbConnection.getInstance()
-      .connect()
-      .then(async () => {
-        this.app.listen(this.port, () => console.log(`Server running at http://localhost:${this.port}`))
-      })
-      .catch(console.error)
-  }
+  return app
 }
-
-export default App

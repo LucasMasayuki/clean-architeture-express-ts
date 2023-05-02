@@ -1,5 +1,5 @@
-import AuthDirective from './auth-directive'
+import { authDirectiveTransformer } from './auth-directive'
 
 export default {
-  auth: AuthDirective
+  auth: authDirectiveTransformer
 }

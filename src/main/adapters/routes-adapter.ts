@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/strict-boolean-expressions */
 import { RequestHandler } from 'express'
 
-import Controller from '@/presentation/controllers/controller'
 import { HttpStatus } from '@/presentation/helpers/http-helper'
 import qs from 'qs'
+import { Controller } from '@/presentation/controllers/controller'
 
 type Adapter = (controller: Controller) => RequestHandler
 

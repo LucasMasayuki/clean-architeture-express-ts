@@ -1,3 +1,5 @@
+import 'reflect-metadata'
+
 import faker from 'faker'
 
 import {
@@ -5,7 +7,9 @@ import {
   AuthenticationParams,
   AuthenticationResult
 } from '@/domain/usecases/authentication'
+import { injectable } from 'inversify'
 
+@injectable()
 export default class AuthenticationSpy implements Authentication {
   params: AuthenticationParams
 

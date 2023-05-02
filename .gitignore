@@ -107,4 +107,3 @@ npm-debug.log
 .env
 .DS_Store
 dist
-yarn.lock

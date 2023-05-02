@@ -3,7 +3,9 @@
 import { SaveLogErrorsRepository } from '@/data/interfaces/database/log/save-log-errors-repository'
 import { LogError } from '../../entities/log-error.entity'
 import DbRepository from '../db-repository'
+import { injectable } from 'inversify'
 
+@injectable()
 export default class LogErrorsRepository
   extends DbRepository
   implements SaveLogErrorsRepository {

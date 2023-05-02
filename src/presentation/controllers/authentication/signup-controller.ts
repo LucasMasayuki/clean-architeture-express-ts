@@ -1,9 +1,11 @@
 import { ok, forbidden, HttpResponse } from '@/presentation/helpers/http-helper'
 import { AddUser } from '@/domain/usecases/add-user'
 import { Authentication } from '@/domain/usecases/authentication'
-import Controller from '../controller'
 import { ValidationBuilder as Builder, Validator } from '@/validation/validators'
 import { EmailInUseError } from '@/presentation/errors'
+import { Controller } from '../controller'
+import { ADD_USER_SYMBOL, AUTHENTICATION_SYMBOL } from '@/main/ioc-containers/symbols/use-cases'
+import { inject, injectable } from 'inversify'
 
 export type SignUpControllerRequest = {
   firstName: string
@@ -14,10 +16,11 @@ export type SignUpControllerRequest = {
   passwordConfirmation: string
 }
 
+@injectable()
 export class SignUpController extends Controller {
   constructor (
-    private readonly useCase: AddUser,
-    private readonly authentication: Authentication
+    @inject(AUTHENTICATION_SYMBOL) private readonly authentication: Authentication,
+    @inject(ADD_USER_SYMBOL) private readonly useCase: AddUser
   ) {
     super()
   }

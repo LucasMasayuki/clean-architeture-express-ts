@@ -1,7 +1,9 @@
 import faker from 'faker'
 
 import { Encrypter } from '@/data/interfaces/cryptography'
+import { injectable } from 'inversify'
 
+@injectable()
 export default class EncrypterSpy implements Encrypter {
   ciphertext = faker.datatype.uuid()
 

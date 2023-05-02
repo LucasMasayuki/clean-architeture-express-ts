@@ -1,7 +1,7 @@
 import { UserInputError, AuthenticationError, ForbiddenError, ApolloError } from 'apollo-server-express'
 
 import HttpStatus from '@/shared/enums/httpStatus'
-import Controller from '@/presentation/controllers/controller'
+import { Controller } from '@/presentation/controllers/controller'
 
 const adaptResolver = async (controller: Controller, args?: any, context?: any): Promise<any> => {
   const request = {

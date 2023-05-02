@@ -3,7 +3,9 @@ import {
   AddUserParams,
   AddUserResult
 } from '@/domain/usecases/add-user'
+import { injectable } from 'inversify'
 
+@injectable()
 export default class AddUserSpy implements AddUser {
   constructor () {
     this.params = null

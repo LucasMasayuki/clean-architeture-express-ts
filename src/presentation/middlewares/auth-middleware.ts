@@ -1,16 +1,18 @@
+import 'reflect-metadata'
+
 import { Middleware } from '@/presentation/interfaces/middlewares'
 import { forbidden, HttpResponse, ok, serverError } from '@/presentation/helpers/http-helper'
 import { LoadUserByToken } from '@/domain/usecases/load-user-by-token'
+import { inject, injectable } from 'inversify'
+import { LOAD_USER_BY_TOKEN_SYMBOL } from '@/main/ioc-containers/symbols/use-cases'
 
 export type AuthMiddlewareRequest = {
   token?: string
 }
 
+@injectable()
 export class AuthMiddleware implements Middleware {
-  private readonly loadUserByToken: LoadUserByToken
-
-  constructor (loadUserByToken: LoadUserByToken) {
-    this.loadUserByToken = loadUserByToken
+  constructor (@inject(LOAD_USER_BY_TOKEN_SYMBOL) private readonly loadUserByToken: LoadUserByToken) {
   }
 
   async handle (request: AuthMiddlewareRequest): Promise<HttpResponse> {

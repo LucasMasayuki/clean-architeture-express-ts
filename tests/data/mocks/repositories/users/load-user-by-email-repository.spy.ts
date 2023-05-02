@@ -1,7 +1,9 @@
 import { LoadUserByEmailRepository } from '@/data/interfaces/database/user/load-user-by-email-repository'
 import { User } from '@/infra/database/entities/user.entity'
 import UserMock from '@/tests/infra/database/mocks/entities/user-mock.entity'
+import { injectable } from 'inversify'
 
+@injectable()
 export default class LoadUserByEmailRepositorySpy
 implements LoadUserByEmailRepository {
   email: string | undefined

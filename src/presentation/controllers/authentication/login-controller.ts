@@ -1,15 +1,20 @@
+import 'reflect-metadata'
+
 import { unauthorized, ok, HttpResponse } from '@/presentation/helpers/http-helper'
-import { Authentication } from '@/domain/usecases/authentication'
-import Controller from '../controller'
 import { ValidationBuilder as Builder, Validator } from '@/validation/validators'
+import { Controller } from '../controller'
+import { inject, injectable } from 'inversify'
+import { AUTHENTICATION_SYMBOL } from '@/main/ioc-containers/symbols/use-cases'
+import { Authentication } from '@/domain/usecases/authentication'
 
 export type LoginControllerRequest = {
   email: string
   password: string
 }
 
+@injectable()
 export class LoginController extends Controller {
-  constructor (private readonly useCase: Authentication) {
+  constructor (@inject(AUTHENTICATION_SYMBOL) private readonly useCase: Authentication) {
     super()
   }
 

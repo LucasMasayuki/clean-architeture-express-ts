@@ -1,8 +1,8 @@
 import HttpStatus from '@/shared/enums/httpStatus'
 import { HttpResponse } from '@/presentation/helpers/http-helper'
-import Controller from '@/presentation/controllers/controller'
 import { SaveLogErrorsRepository } from '@/data/interfaces/database/log/save-log-errors-repository'
 import { LogError } from '@/infra/database/entities/log-error.entity'
+import { Controller } from '@/presentation/controllers/controller'
 
 export default class LogControllerDecorator extends Controller {
   constructor (private readonly controller: Controller, private readonly logErrorRepository: SaveLogErrorsRepository) {

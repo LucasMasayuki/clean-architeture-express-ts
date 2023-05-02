@@ -1,6 +1,8 @@
 import { SaveUserRepository } from '@/data/interfaces/database/user/save-user-repository'
 import { User } from '@/infra/database/entities/user.entity'
+import { injectable } from 'inversify'
 
+@injectable()
 export default class SaveUserRepositorySpy implements SaveUserRepository {
   user: User | undefined
 

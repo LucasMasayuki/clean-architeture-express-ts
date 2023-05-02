@@ -1,3 +1,7 @@
 /*.js’
 node_modules
+coverage
 dist
+documentation
+.husky
+.vscode

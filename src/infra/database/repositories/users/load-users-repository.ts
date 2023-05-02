@@ -1,10 +1,10 @@
-/* eslint-disable class-methods-use-this */
-
 import { LoadUserByEmailRepository } from '@/data/interfaces/database/user/load-user-by-email-repository'
 import { LoadUserByIdRepository } from '@/data/interfaces/database/user/load-user-by-id-repository'
 import { User } from '../../entities/user.entity'
 import DbRepository from '../db-repository'
+import { injectable } from 'inversify'
 
+@injectable()
 export default class LoadUsersRepository
   extends DbRepository
   implements LoadUserByEmailRepository, LoadUserByIdRepository {

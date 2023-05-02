@@ -1,8 +1,11 @@
 {
   "compilerOptions": {
+    "typeRoots": ["./src/main/types", "./node_modules/@types"],
     "outDir": "dist",
     "module": "commonjs",
-    "target": "esNext",
+    "target": "es2021",
+    "moduleResolution": "node",
+    "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
     "sourceMap": true,
     "skipLibCheck": true,
@@ -10,6 +13,7 @@
     "noImplicitOverride": true,
     "removeComments": true,
     "emitDecoratorMetadata": true,
+    "incremental": true,
     "experimentalDecorators": true,
     "rootDirs": ["src", "tests"],
     "baseUrl": "src",

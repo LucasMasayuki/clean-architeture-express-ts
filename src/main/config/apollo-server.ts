@@ -1,17 +1,16 @@
 import { ApolloServer } from 'apollo-server-express'
-import express from 'express'
 import { GraphQLError } from 'graphql'
 
-import HttpStatus from '@/shared/enums/httpStatus'
 import typeDefs from '@/main/graphql/type-defs'
 import resolvers from '@/main/graphql/resolvers'
-import schemaDirectives from '@/main/graphql/directives'
+import { HttpStatus } from '@/presentation/helpers/http-helper'
+import { makeExecutableSchema } from '@graphql-tools/schema'
+import { authDirectiveTransformer } from '../graphql/directives/auth-directive'
 
 const checkError = (error: GraphQLError, errorName: string): boolean => {
   return [error.name, error.originalError?.name].some((name) => name === errorName)
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const handleErrors = (response: any, errors: readonly GraphQLError[]): void => {
   errors?.forEach((error) => {
     response.data = undefined
@@ -27,19 +26,15 @@ const handleErrors = (response: any, errors: readonly GraphQLError[]): void => {
   })
 }
 
-export default (app: express.Application): void => {
-  const server = new ApolloServer({
-    resolvers,
-    typeDefs,
-    schemaDirectives,
-    context: ({ req }) => ({ req }),
-    plugins: [
-      {
-        requestDidStart: () => ({
-          willSendResponse: ({ response, errors }) => handleErrors(response, errors ?? [])
-        })
-      }
-    ]
-  })
-  server.applyMiddleware({ app })
-}
+let schema = makeExecutableSchema({ resolvers, typeDefs })
+schema = authDirectiveTransformer(schema)
+
+export const setupApolloServer = (): ApolloServer => new ApolloServer({
+  schema,
+  context: ({ req }) => ({ req }),
+  plugins: [{
+    requestDidStart: async () => ({
+      willSendResponse: async ({ response, errors }) => handleErrors(response, errors ?? [])
+    })
+  }]
+})

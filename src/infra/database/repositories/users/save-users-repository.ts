@@ -1,9 +1,9 @@
-/* eslint-disable class-methods-use-this */
-
 import { SaveUserRepository } from '@/data/interfaces/database/user/save-user-repository'
 import { User } from '../../entities/user.entity'
 import DbRepository from '../db-repository'
+import { injectable } from 'inversify'
 
+@injectable()
 export default class SaveUsersRepository
   extends DbRepository
   implements SaveUserRepository {

@@ -2,7 +2,7 @@
 import faker from 'faker'
 
 import { HttpResponse, ok } from '@/presentation/helpers/http-helper'
-import Controller from '@/presentation/controllers/controller'
+import { Controller } from '@/presentation/controllers/controller'
 
 export default class ControllerSpy extends Controller {
   httpResponse = ok(faker.datatype.uuid())

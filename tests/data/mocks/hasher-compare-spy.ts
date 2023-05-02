@@ -1,5 +1,7 @@
 import { HashComparer } from '@/data/interfaces/cryptography'
+import { injectable } from 'inversify'
 
+@injectable()
 export default class HashComparerSpy implements HashComparer {
   plaintext: string
 

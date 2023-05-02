@@ -1,5 +1,6 @@
 import adaptMiddleware from '@/main/adapters/express-middleware-adapter'
-import makeAuthMiddleware from '@/main/factories/middlewares/auth-middlewares-factory'
+import { IocContainer } from '../ioc-containers/inversify.config'
+import { AuthMiddleware } from '@/presentation/middlewares/auth-middleware'
 
-const auth = adaptMiddleware(makeAuthMiddleware())
+const auth = adaptMiddleware(IocContainer.resolve(AuthMiddleware))
 export default auth

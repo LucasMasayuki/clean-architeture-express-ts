@@ -1,5 +1,7 @@
 import { Validation } from '@/presentation/interfaces/validation'
+import { injectable } from 'inversify'
 
+@injectable()
 export default class ValidationSpy implements Validation {
   error: Error | null = null
 
