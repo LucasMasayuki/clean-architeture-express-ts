@@ -98,6 +98,7 @@
     "@typescript-eslint/eslint-plugin": "5.4.0",
     "@typescript-eslint/parser": "5.4.0",
     "apollo-server-integration-testing": "3.0.0",
+    "commitlint": "^17.6.1",
     "eslint": "8.2.0",
     "eslint-config-standard-with-typescript": "21.0.1",
     "eslint-import-resolver-typescript": "2.5.0",
