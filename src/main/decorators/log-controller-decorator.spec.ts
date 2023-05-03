@@ -3,8 +3,8 @@ import faker from 'faker'
 import LogControllerDecorator from '@/main/decorators/log-controller-decorator'
 import LogErrorRepositorySpy from '@/tests/data/mocks/log-error-repository-spy'
 
-import ControllerSpy from '../mocks/controller-spy'
-import mockServerError from '../mocks/mock-server-error'
+import ControllerSpy from '@/tests/main/mocks/controller-spy'
+import mockServerError from '@/tests/main/mocks/mock-server-error'
 
 type SutTypes = {
   sut: LogControllerDecorator
